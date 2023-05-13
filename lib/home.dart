@@ -21,6 +21,7 @@ class _HomeState extends State<Home> {
           colorBlendMode: BlendMode.srcOver,
         ),
         backgroundColor: Color.fromRGBO(7, 17, 26, 1),
+      automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Container(

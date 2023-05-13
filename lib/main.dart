@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_profile/Admin/home.dart';
+import 'package:flutter_profile/Admin/login.dart';
 import 'package:flutter_profile/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
@@ -17,6 +20,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final routes = <String, WidgetBuilder>{
+      // Front Pages
+      '/': (context) => Home(),
+
+      // Admin Pages
+      '/login': (context) => Login(),
+      '/admin': (context) => AdminHome(),
+    };
     return MaterialApp(
       title: 'Enricko Profile',
       debugShowCheckedModeBanner: false,
@@ -28,7 +39,10 @@ class MyApp extends StatelessWidget {
         canvasColor: Color.fromRGBO(7, 17, 26, 1),
         textTheme: GoogleFonts.latoTextTheme(),
       ),
-      home: Home(),
+      builder: EasyLoading.init(),
+      // home: Home(),
+      initialRoute: '/',
+      routes: routes,
     );
   }
 }

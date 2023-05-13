@@ -44,6 +44,9 @@ dependencies:
   image_picker: ^0.8.7+4
   image_picker_web: ^3.0.0+1
   url_launcher: ^6.1.10
+  shimmer: ^2.0.0
+  firebase_auth: ^4.6.0
+  flutter_easyloading: ^3.0.5
 
 dev_dependencies:
   flutter_test:

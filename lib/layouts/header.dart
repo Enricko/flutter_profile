@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import "package:flutter/material.dart";
-import 'package:flutter_profile/controller.dart';
+import 'package:flutter_profile/Controller/controller.dart';
 import 'package:flutter_profile/model/media.dart';
 import "package:responsive_ui/responsive_ui.dart";
 import 'package:firebase_core/firebase_core.dart';
@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter_profile/firebase_options.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HeaderProfile extends StatefulWidget {
   const HeaderProfile({super.key});
@@ -16,45 +17,11 @@ class HeaderProfile extends StatefulWidget {
   @override
   State<HeaderProfile> createState() => _HeaderProfileState();
 }
-// class Media {
-//   final String iconPath;
-//   final String link;
-
-//   Media(
-//     this.iconPath,
-//     this.link,
-//   );
-// }
-// class Media {
-//   String image, link;
-
-//   Media({required this.image, required this.link});
-//   factory Media.fromJSON(Map<dynamic, dynamic> media) => Media(image: media["image"], link: media["link"]);
-// }
-
 
 class _HeaderProfileState extends State<HeaderProfile> {
-  // final List<Media> ListMedia = [
-  //   Media(
-  //     'assets/insta.png',
-  //     'https://www.instagram.com/enricko_putra_h/?hl=id'
-  //   ),
-  //   Media(
-  //     'assets/insta.png',
-  //     'https://www.instagram.com/enricko_putra_h/?hl=id'
-  //   ),
-  // ];
-
   DatabaseReference db_media =
       FirebaseDatabase.instance.ref().child('medias');
-      
-
-  // Future medias = 
-
-  // Future<List<Media>> medias = FirebaseDatabase.instance.ref().child('medias').onValue.asyncMap((medias) {
-  //   return medias.documents.map((media) => Media.fromJSON(media.data)).toList();
-  // }).single;
-  // Map<String,dynamic>? datas;
+    
   media() async{
     List productList = [];
     final snapshot = await FirebaseDatabase.instance.ref().child('medias').get();
@@ -188,16 +155,20 @@ class _HeaderProfileState extends State<HeaderProfile> {
                                 ),
                             ],
                           );
-                          // var productList = snapshot.data! as List;
-                          // print(snapshot.data! as Map);
-                          // for (var i in productList) {
-                          //   print(i);
-                          // }
-                          // return Text(productList.length.toString());
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
-                          return CircularProgressIndicator();
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey,
+                            highlightColor: Colors.grey.shade100,
+                            enabled: true,
+                            child: Container(
+                              margin: EdgeInsets.only(top: 10,right: 10),
+                              padding: EdgeInsets.all(5),
+                              width: 50,
+                              height: 50,
+                            )
+                          );
                         }
                       }
                     ),
