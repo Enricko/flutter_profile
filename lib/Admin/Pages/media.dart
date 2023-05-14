@@ -17,6 +17,7 @@ class MediaPage extends StatefulWidget {
 class _MediaPageState extends State<MediaPage> {
   DatabaseReference db_media =
       FirebaseDatabase.instance.ref().child('medias');
+  var shim = true;
     
   media() async{
     List productList = [];
@@ -39,95 +40,13 @@ class _MediaPageState extends State<MediaPage> {
   }
   @override
   Widget build(BuildContext context) {
-    // return Responsive(
-    //   children: 
-    //     [
-    //       FirebaseAnimatedList(
-    //       query: db_Ref,
-    //       shrinkWrap: true,
-    //       itemBuilder: (context, snapshot, animation, index) {
-    //         Map Media = snapshot.value as Map;
-    //         Media['key'] = snapshot.key;
-    //         return Responsive(
-    //           children: [
-    //             Div(
-    //               divison: Division(
-    //                 colXL: 3,
-    //                 colL: 4,
-    //                 colM: 4,
-    //                 colS: 6,
-    //                 colXS: 12,
-    //               ),
-    //               child: GestureDetector(
-    //                 onTap: () {
-    //                   // Navigator.push(
-    //                   //   context,
-    //                   //   MaterialPageRoute(
-    //                   //     builder: (_) => UpdateRecord(
-    //                   //       Media_Key: Media['key'],
-    //                   //     ),
-    //                   //   ),
-    //                   // );
-    //                   null;
-    //                   // print(Media['key']);
-    //                 },
-    //                 child: Container(
-    //                   child: Padding(
-    //                     padding: const EdgeInsets.all(8.0),
-    //                     child: ListTile(
-    //                       shape: RoundedRectangleBorder(
-    //                         side: BorderSide(
-    //                           color: Colors.white,
-    //                         ),
-    //                         borderRadius: BorderRadius.circular(10),
-    //                       ),
-    //                       tileColor: Colors.indigo[100],
-    //                       trailing: IconButton(
-    //                         icon: Icon(
-    //                           Icons.delete,
-    //                           color: Colors.red[900],
-    //                         ),
-    //                         onPressed: () {
-    //                           delete(context,Media['key'],db_Ref);
-    //                         },
-    //                       ),
-    //                       leading: CircleAvatar(
-    //                         backgroundColor: Color.fromARGB(255, 94, 94, 94),
-    //                         backgroundImage: NetworkImage(
-    //                           Media['image'],
-    //                         ),
-    //                       ),
-    //                       title: Text(
-    //                         Media['link'],
-    //                         style: TextStyle(
-    //                           fontSize: 25,
-    //                           fontWeight: FontWeight.bold,
-    //                         ),
-    //                       ),
-    //                       // subtitle: Text(
-    //                       //   Media['number'],
-    //                       //   style: TextStyle(
-    //                       //     fontSize: 25,
-    //                       //     fontWeight: FontWeight.bold,
-    //                       //   ),
-    //                       // ),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //         );
-    //       },
-    //     ),
-    //   ],
-    // );
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: FutureBuilder(
         future: Controller.Media(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
+            shim = false;
             var media = snapshot.data!.entries.toList();
             return Responsive(
               children: [
@@ -208,37 +127,6 @@ class _MediaPageState extends State<MediaPage> {
                     ),
                   ),
                 ),
-                  // MouseRegion(
-                  //   cursor: SystemMouseCursors.click,
-                  //   child: GestureDetector(
-                  //     onTap: () async{
-                  //       final url = i['link'];
-                  //       final uri = Uri.parse(url);
-                  //       if (await canLaunchUrl(uri)) {
-                  //         await launchUrl(uri);
-                  //       } else {
-                  //         throw 'Could not launch $url';
-                  //       }
-                  //     },
-                  //     child: Container(
-                  //       margin: EdgeInsets.only(top: 10,right: 10),
-                  //       padding: EdgeInsets.all(5),
-                  //       width: 50,
-                  //       height: 50,
-                  //       decoration: BoxDecoration(
-                  //         color: Color.fromARGB(255, 94, 94, 94),
-                  //         borderRadius: BorderRadius.circular(5),
-                  //       ),
-                  //       child: ClipRRect(
-                  //         borderRadius: BorderRadius.circular(5),
-                  //         child: Image.network(
-                  //           "${i['image']}",
-                  //           width: 30,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
               ],
             );
           } else if (snapshot.hasError) {
@@ -247,13 +135,80 @@ class _MediaPageState extends State<MediaPage> {
             return Shimmer.fromColors(
               baseColor: Colors.grey,
               highlightColor: Colors.grey.shade100,
-              enabled: true,
-              child: Container(
-                margin: EdgeInsets.only(top: 10,right: 10),
-                padding: EdgeInsets.all(5),
-                width: 50,
-                height: 50,
-              )
+              enabled: shim,
+              child: Responsive(
+                children: [
+                  for (int i = 0;i<30;i++) 
+                  Div(
+                    divison: Division(
+                      colXL: 3,
+                      colL: 4,
+                      colM: 6,
+                      colS: 12,
+                      colXS: 12,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        null;
+                      },
+                      child: Container(
+                        height: 100,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            tileColor: Colors.indigo[100],
+                            trailing: Column(
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.red[900],
+                                  ),
+                                  onPressed: () {
+                                    // delete(context,media[i].key,db_media);
+                                  },
+                                ),
+                              ],
+                            ),
+                            leading: CircleAvatar(
+                              backgroundColor: Color.fromARGB(255, 94, 94, 94),
+                              // backgroundImage: NetworkImage(
+                              //   // media[i].value['image'],
+                              //   ""
+                              // ),
+                            ),
+                            title: SingleChildScrollView(
+                              child: Container(
+                                height: 70,
+                                child: Text(
+                                  "==========================================",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // subtitle: Text(
+                            //   Media['number'],
+                            //   style: TextStyle(
+                            //     fontSize: 25,
+                            //     fontWeight: FontWeight.bold,
+                            //   ),
+                            // ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             );
           }
         }

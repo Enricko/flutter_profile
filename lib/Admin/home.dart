@@ -20,6 +20,9 @@ class _AdminState extends State<Admin> {
     'dashboard' : Container(),
     'media' : MediaPage(),
   };
+  final formCreate = <String,dynamic>{
+    'media' : '/admin/media',
+  };
   @override
   void initState() {
     Auth.userCheck(context);
@@ -39,15 +42,12 @@ class _AdminState extends State<Admin> {
           child: pages[widget.page],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: formCreate[widget.page] == null ? Container() 
+      : FloatingActionButton(
         backgroundColor: Colors.indigo[900],
+        child: Icon(Icons.create_outlined),
         onPressed: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (_) => ccreate(),
-          //   ),
-          // );
+          Navigator.pushNamed(context, formCreate[widget.page]);
         },
       ),
       drawer: Drawer(
