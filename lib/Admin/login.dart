@@ -1,3 +1,4 @@
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:flutter_profile/Controller/auth.dart";
@@ -26,6 +27,17 @@ class _LoginState extends State<Login> {
     }
 
     Auth.login(data);
+  }
+  @override
+  void initState() {
+    if(FirebaseAuth.instance.currentUser != null){
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        Navigator.of(context).pushReplacementNamed("/admin");
+      });
+      EasyLoading.showSuccess('You already logged',dismissOnTap: true);
+      return;
+    }
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
