@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_profile/Admin/Pages/media.dart';
 import 'package:flutter_profile/Admin/home.dart';
 import 'package:flutter_profile/Admin/login.dart';
 import 'package:flutter_profile/home.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'Controller/auth.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -15,10 +17,14 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final routes = <String, WidgetBuilder>{
@@ -27,7 +33,9 @@ class MyApp extends StatelessWidget {
 
       // Admin Pages
       '/login': (context) => Login(),
-      '/admin': (context) => AdminHome(),
+
+      '/admin': (context) => Admin(page:'dashboard'),
+      '/admin/media': (context) => Admin(page:'media'),
     };
 
     return MaterialApp(

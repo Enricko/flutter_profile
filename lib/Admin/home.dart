@@ -3,28 +3,195 @@ import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 
 import "../Controller/auth.dart";
+import "../model/media.dart";
+import "Pages/media.dart";
 
-class AdminHome extends StatefulWidget {
-  const AdminHome({super.key});
+class Admin extends StatefulWidget {
+  const Admin({super.key, required this.page});
+  final String page;
 
   @override
-  State<AdminHome> createState() => _AdminHomeState();
+  State<Admin> createState() => _AdminState();
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class _AdminState extends State<Admin> {
   
+  final pages = <String,dynamic>{
+    'dashboard' : Container(),
+    'media' : MediaPage(),
+  };
   @override
   void initState() {
     Auth.userCheck(context);
     super.initState();
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(7, 17, 26, 1),
+        // automaticallyImplyLeading: false,
       ),
+      body: SafeArea(
+        child: Container(
+          child: pages[widget.page],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.indigo[900],
+        onPressed: () {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (_) => ccreate(),
+          //   ),
+          // );
+        },
+      ),
+      drawer: Drawer(
+        child: SafeArea(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                child: Image.asset(
+                  'assets/eph2.png',
+                  width: 50,
+                  height: 50,
+                  colorBlendMode: BlendMode.srcOver,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 15,top: 15,bottom: 10),
+                child: Text(
+                  "Dashboard",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14
+                  ),
+                ),
+              ),
+              ListTile(
+                selectedColor: Colors.blueGrey,
+                hoverColor: Colors.blueGrey,
+                tileColor: widget.page == 'dashboard' ? Colors.blueGrey : null,
+                title: Container(
+                  child: Row(
+                    children: [
+                      Icon(Icons.speed,size: 16,color: Colors.white),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        'Dashboard',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                onTap: () => Navigator.pushNamed(context, '/admin'),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 15,top: 15,bottom: 10),
+                child: Text(
+                  "Table",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14
+                  ),
+                ),
+              ),
+              ListTile(
+                selectedColor: Colors.blueGrey,
+                hoverColor: Colors.blueGrey,
+                tileColor: widget.page == 'media' ? Colors.blueGrey : null,
+                title: Container(
+                  child: Row(
+                    children: [
+                      Icon(Icons.speed,size: 16,color: Colors.white),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        'Media',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                onTap: () => Navigator.pushNamed(context, '/admin/media'),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 15,top: 15,bottom: 10),
+                child: Text(
+                  "Settings",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14
+                  ),
+                ),
+              ),
+              ListTile(
+                selectedColor: Colors.blueGrey,
+                hoverColor: Colors.blueGrey,
+                title: Container(
+                  child: Row(
+                    children: [
+                      Icon(Icons.power_settings_new,size: 16,color: Colors.white),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        'Logout',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                onTap: () => _logout(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    
+  }
+  void _logout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          title: const Text('Please Confirm'),
+          content: const Text('Are you sure want to logout?'),
+          actions: [
+            // The "Yes" button
+            TextButton(
+              onPressed: () {
+                Auth.logout(context);
+              },
+              child: const Text('Yes')
+            ),
+            TextButton(
+              onPressed: () {
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+              child: const Text('No')
+            )
+          ],
+        );
+      }
     );
   }
 }

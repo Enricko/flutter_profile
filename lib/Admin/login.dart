@@ -26,7 +26,7 @@ class _LoginState extends State<Login> {
       return;
     }
 
-    Auth.login(data);
+    Auth.login(data,context);
   }
   @override
   void initState() {
