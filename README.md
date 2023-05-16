@@ -1,7 +1,5 @@
 # flutter_profile
 
-<p align="left"> <img src="https://komarev.com/ghpvc/?username=enricko_flutter_profile&label=Profile%20views&color=0e75b6&style=flat" alt="enricko_flutter_profile" /> </p>
-
 A new Flutter project.
 
 ## Getting Started
