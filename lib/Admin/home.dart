@@ -1,10 +1,12 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
+import "package:flutter_profile/Admin/Pages/media/mediaInsert.dart";
 
 import "../Controller/auth.dart";
 import "../model/media.dart";
-import "Pages/media.dart";
+import 'Pages/media/media.dart';
+import "Pages/media/mediaUpdate.dart";
 
 class Admin extends StatefulWidget {
   const Admin({super.key, required this.page});
@@ -19,9 +21,11 @@ class _AdminState extends State<Admin> {
   final pages = <String,dynamic>{
     'dashboard' : Container(),
     'media' : MediaPage(),
+    'mediaInsert' : MediaInsert(),
+    'mediaUpdate' : MediaUpdate(),
   };
   final formCreate = <String,dynamic>{
-    'media' : '/admin/media',
+    'media' : '/admin/media/insert',
   };
   @override
   void initState() {
@@ -38,14 +42,17 @@ class _AdminState extends State<Admin> {
         // automaticallyImplyLeading: false,
       ),
       body: SafeArea(
-        child: Container(
-          child: pages[widget.page],
-        ),
+        child: pages[widget.page],
       ),
       floatingActionButton: formCreate[widget.page] == null ? Container() 
       : FloatingActionButton(
         backgroundColor: Colors.indigo[900],
-        child: Icon(Icons.create_outlined),
+        child: Tooltip(
+          message: "Add Data",
+          child: Icon(
+            Icons.create_outlined
+          )
+        ),
         onPressed: () {
           Navigator.pushNamed(context, formCreate[widget.page]);
         },
@@ -75,7 +82,7 @@ class _AdminState extends State<Admin> {
               ListTile(
                 selectedColor: Colors.blueGrey,
                 hoverColor: Colors.blueGrey,
-                tileColor: widget.page == 'dashboard' ? Colors.blueGrey : null,
+                tileColor: widget.page.contains('dashboard') == true ? Colors.blueGrey : null,
                 title: Container(
                   child: Row(
                     children: [
@@ -108,7 +115,7 @@ class _AdminState extends State<Admin> {
               ListTile(
                 selectedColor: Colors.blueGrey,
                 hoverColor: Colors.blueGrey,
-                tileColor: widget.page == 'media' ? Colors.blueGrey : null,
+                tileColor: widget.page.contains('media') == true ? Colors.blueGrey : null,
                 title: Container(
                   child: Row(
                     children: [

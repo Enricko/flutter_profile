@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_database/firebase_ui_database.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_profile/Controller/controller.dart';
 import 'package:flutter_profile/model/media.dart';
@@ -19,8 +21,9 @@ class HeaderProfile extends StatefulWidget {
 }
 
 class _HeaderProfileState extends State<HeaderProfile> {
-  DatabaseReference db_media =
+  final db_media =
       FirebaseDatabase.instance.ref().child('medias');
+      // FirebaseFirestore.instance.collection('medias');
     
   media() async{
     List productList = [];
@@ -83,7 +86,7 @@ class _HeaderProfileState extends State<HeaderProfile> {
                 colXL: 6,
               ),
               child: Container(
-                margin: screenWidth < 900 ? EdgeInsets.symmetric(horizontal: screenWidth / 10 * 3,vertical: 15) : EdgeInsets.only(left: 20),
+                margin: screenWidth < 900 ? EdgeInsets.symmetric(horizontal: screenWidth / 10 * 1.7,vertical: 15) : EdgeInsets.only(left: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,18 +118,28 @@ class _HeaderProfileState extends State<HeaderProfile> {
                     
                     // for(final i in db_media.get())
                     // Text(datas?['link']),
-                    FutureBuilder(
-                      future: Controller.Media(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    FirebaseDatabaseQueryBuilder(
+                      query: db_media,
+                      builder: (context, snapshot, _) {
                         if (snapshot.hasData) {
-                          return Row(
-                            children: [
-                              for (var i in snapshot.data!.values) 
-                                MouseRegion(
+                          var data = snapshot.docs;
+                          List<Widget> listWidget = [];
+                          for (var i = 0;i < data.length;i++) {
+                            final val = data[i].value as Map<String,dynamic>;
+                            listWidget.add(
+                              Div(
+                                divison: Division(
+                                  colXL: 2,
+                                  colL: 2,
+                                  colM: 2,
+                                  colS: 3,
+                                  colXS: 4,
+                                ),
+                                child: MouseRegion(
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () async{
-                                      final url = i['link'];
+                                      final url = val['link'];
                                       final uri = Uri.parse(url);
                                       if (await canLaunchUrl(uri)) {
                                         await launchUrl(uri);
@@ -146,32 +159,121 @@ class _HeaderProfileState extends State<HeaderProfile> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(5),
                                         child: Image.network(
-                                          "${i['image']}",
+                                          "${val['image']}",
                                           width: 30,
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                            ],
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return Shimmer.fromColors(
-                            baseColor: Colors.grey,
-                            highlightColor: Colors.grey.shade100,
-                            enabled: true,
-                            child: Container(
-                              margin: EdgeInsets.only(top: 10,right: 10),
-                              padding: EdgeInsets.all(5),
-                              width: 50,
-                              height: 50,
-                            )
+                              ),
+                            );
+                          }
+                          return Responsive(
+                            children: listWidget,
                           );
                         }
-                      }
+                        // return CircularProgressIndicator();
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey,
+                          highlightColor: Colors.grey.shade100,
+                          enabled: true,
+                          child: Responsive(
+                            children: [
+                              for (var i = 0;i < 3;i++)
+                              Div(
+                                divison: Division(
+                                  colXL: 2,
+                                  colL: 2,
+                                  colM: 2,
+                                  colS: 3,
+                                  colXS: 4,
+                                ),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 10,right: 10),
+                                    padding: EdgeInsets.all(5),
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 94, 94, 94),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
+                    // FutureBuilder(
+                    //   future: Controller.Media(),
+                    //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    //     if (snapshot.hasData) {
+                    //       return Responsive(
+                    //         children: [
+                    //           for (var i in snapshot.data!.values) 
+                    //             Div(
+                    //               divison: Division(
+                    //                 colXL: 2,
+                    //                 colL: 2,
+                    //                 colM: 2,
+                    //                 colS: 3,
+                    //                 colXS: 4,
+                    //               ),
+                    //               child: MouseRegion(
+                    //                 cursor: SystemMouseCursors.click,
+                    //                 child: GestureDetector(
+                    //                   onTap: () async{
+                    //                     final url = i['link'];
+                    //                     final uri = Uri.parse(url);
+                    //                     if (await canLaunchUrl(uri)) {
+                    //                       await launchUrl(uri);
+                    //                     } else {
+                    //                       throw 'Could not launch $url';
+                    //                     }
+                    //                   },
+                    //                   child: Container(
+                    //                     margin: EdgeInsets.only(top: 10,right: 10),
+                    //                     padding: EdgeInsets.all(5),
+                    //                     width: 50,
+                    //                     height: 50,
+                    //                     decoration: BoxDecoration(
+                    //                       color: Color.fromARGB(255, 94, 94, 94),
+                    //                       borderRadius: BorderRadius.circular(5),
+                    //                     ),
+                    //                     child: ClipRRect(
+                    //                       borderRadius: BorderRadius.circular(5),
+                    //                       child: Image.network(
+                    //                         "${i['image']}",
+                    //                         width: 30,
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //         ],
+                    //       );
+                    //     } else if (snapshot.hasError) {
+                    //       return Text('Error: ${snapshot.error}');
+                    //     } else {
+                    //       return Shimmer.fromColors(
+                    //         baseColor: Colors.grey,
+                    //         highlightColor: Colors.grey.shade100,
+                    //         enabled: true,
+                    //         child: Container(
+                    //           margin: EdgeInsets.only(top: 10,right: 10),
+                    //           padding: EdgeInsets.all(5),
+                    //           width: 50,
+                    //           height: 50,
+                    //         )
+                    //       );
+                    //     }
+                    //   }
+                    // ),
                   ],
                 ),
               ),
@@ -181,4 +283,5 @@ class _HeaderProfileState extends State<HeaderProfile> {
       ),
     );
   }
+  
 }

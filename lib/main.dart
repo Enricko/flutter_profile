@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_profile/Admin/Pages/media.dart';
+import 'package:flutter_profile/Admin/Pages/media-first.dart';
 import 'package:flutter_profile/Admin/home.dart';
 import 'package:flutter_profile/Admin/login.dart';
 import 'package:flutter_profile/home.dart';
@@ -36,6 +36,8 @@ class _MyAppState extends State<MyApp> {
 
       '/admin': (context) => Admin(page:'dashboard'),
       '/admin/media': (context) => Admin(page:'media'),
+      '/admin/media/insert': (context) => Admin(page:'mediaInsert'),
+      '/admin/media/update': (context) => Admin(page:'mediaUpdate'),
     };
 
     return MaterialApp(

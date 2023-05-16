@@ -7,12 +7,21 @@ class Controller{
   
   static Media() async{
     Map? d;
-    final snapshot = await FirebaseDatabase.instance.ref().child('medias').get();
-    if (snapshot.exists) {
-      d = snapshot.value as Map;
-    } else {
-      print('No Data Available');
-    }
+    final snapshot = await FirebaseDatabase.instance.ref().child('medias').onValue.listen((event) {
+      if (event.snapshot.exists) {
+        d = event.snapshot.value as Map;
+      } else {
+        print('No Data Available');
+      }
+    });
     return d;
+    // Map? d;
+    // final snapshot = await FirebaseDatabase.instance.ref().child('medias').get();
+    // if (snapshot.exists) {
+    //   d = snapshot.value as Map;
+    // } else {
+    //   print('No Data Available');
+    // }
+    // return d;
   }
 }
