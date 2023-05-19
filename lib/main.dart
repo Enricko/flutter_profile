@@ -49,7 +49,10 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: Color.fromRGBO(7, 17, 26, 1),
         primaryColor: Color.fromRGBO(21, 181, 114, 1),
         canvasColor: Color.fromRGBO(7, 17, 26, 1),
-        textTheme: GoogleFonts.latoTextTheme(),
+        textTheme: GoogleFonts.poppinsTextTheme(),
+      ),
+      theme: ThemeData(
+        fontFamily: GoogleFonts.poppins().fontFamily,
       ),
       builder: EasyLoading.init(),
       // home: Home(),
