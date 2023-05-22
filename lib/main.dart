@@ -10,6 +10,7 @@ import 'package:flutter_profile/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Controller/auth.dart';
 import 'firebase_options.dart';
+import 'lifeCycle_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     final routes = <String, WidgetBuilder>{
@@ -40,24 +42,26 @@ class _MyAppState extends State<MyApp> {
       '/admin/media/update': (context) => Admin(page:'mediaUpdate'),
     };
 
-    return MaterialApp(
-      title: 'Enricko Profile',
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
-      darkTheme: Theme.of(context).copyWith(
-        platform: TargetPlatform.android,
-        scaffoldBackgroundColor: Color.fromRGBO(7, 17, 26, 1),
-        primaryColor: Color.fromRGBO(21, 181, 114, 1),
-        canvasColor: Color.fromRGBO(7, 17, 26, 1),
-        textTheme: GoogleFonts.poppinsTextTheme(),
+    return LifeCycleManager(
+      child: MaterialApp(
+        title: 'Enricko Profile',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark,
+        darkTheme: Theme.of(context).copyWith(
+          platform: TargetPlatform.android,
+          scaffoldBackgroundColor: Color.fromRGBO(7, 17, 26, 1),
+          primaryColor: Color.fromRGBO(21, 181, 114, 1),
+          canvasColor: Color.fromRGBO(7, 17, 26, 1),
+          textTheme: GoogleFonts.poppinsTextTheme(),
+        ),
+        theme: ThemeData(
+          fontFamily: GoogleFonts.poppins().fontFamily,
+        ),
+        builder: EasyLoading.init(),
+        // home: Home(),
+        initialRoute: '/',
+        routes: routes,
       ),
-      theme: ThemeData(
-        fontFamily: GoogleFonts.poppins().fontFamily,
-      ),
-      builder: EasyLoading.init(),
-      // home: Home(),
-      initialRoute: '/',
-      routes: routes,
     );
   }
 }
