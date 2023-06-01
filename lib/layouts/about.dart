@@ -31,9 +31,9 @@ class _AboutProfileState extends State<AboutProfile> {
                 ),
                 child: Container(
                   child: Image.asset(
-                    'question.png',
+                    'assets/question.png',
                     width: 100,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -118,8 +118,9 @@ class _AboutProfileState extends State<AboutProfile> {
                 ),
                 child: Container(
                   child: Image.asset(
-                    'work.png',
+                    'assets/work.png',
                     width: 100,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),

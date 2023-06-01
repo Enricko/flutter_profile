@@ -157,12 +157,12 @@ class ccreateState extends State<ccreate> {
         };
 
         dbRef!.push().set(Contact).whenComplete(() {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => Home(),
-            ),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (_) => Home(),
+          //   ),
+          // );
         });
       }
     } on Exception catch (e) {

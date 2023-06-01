@@ -1,10 +1,12 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
+import "package:flutter_profile/Admin/Pages/Project/Project.dart";
 import "package:flutter_profile/Admin/Pages/media/mediaInsert.dart";
 
 import "../Controller/auth.dart";
 import "../model/media.dart";
+import "Pages/Project/ProjectInsert.dart";
 import 'Pages/media/media.dart';
 import "Pages/media/mediaUpdate.dart";
 
@@ -20,12 +22,17 @@ class _AdminState extends State<Admin> {
   
   final pages = <String,dynamic>{
     'dashboard' : Container(),
+    // Media
     'media' : MediaPage(),
     'mediaInsert' : MediaInsert(),
     'mediaUpdate' : MediaUpdate(),
+    // Project
+    'project' : ProjectPage(),
+    'projectInsert' : ProjectInsert(),
   };
   final formCreate = <String,dynamic>{
     'media' : '/admin/media/insert',
+    'project' : '/admin/project/insert',
   };
   @override
   void initState() {
@@ -134,6 +141,29 @@ class _AdminState extends State<Admin> {
                   ),
                 ),
                 onTap: () => Navigator.pushNamed(context, '/admin/media'),
+              ),
+              ListTile(
+                selectedColor: Colors.blueGrey,
+                hoverColor: Colors.blueGrey,
+                tileColor: widget.page.contains('project') == true ? Colors.blueGrey : null,
+                title: Container(
+                  child: Row(
+                    children: [
+                      Icon(Icons.speed,size: 16,color: Colors.white),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        'Project',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                onTap: () => Navigator.pushNamed(context, '/admin/project'),
               ),
               Container(
                 margin: EdgeInsets.only(left: 15,top: 15,bottom: 10),

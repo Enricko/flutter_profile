@@ -1,15 +1,10 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_profile/Controller/controller.dart';
-import 'package:flutter_profile/model/media.dart';
 import "package:responsive_ui/responsive_ui.dart";
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:flutter_profile/firebase_options.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -125,7 +120,7 @@ class _HeaderProfileState extends State<HeaderProfile> {
                           var data = snapshot.docs;
                           List<Widget> listWidget = [];
                           for (var i = 0;i < data.length;i++) {
-                            final val = data[i].value as Map<String,dynamic>;
+                            final val = data[i].value as Map<Object?,Object?>;
                             listWidget.add(
                               Div(
                                 divison: Division(
@@ -140,9 +135,12 @@ class _HeaderProfileState extends State<HeaderProfile> {
                                   child: GestureDetector(
                                     onTap: () async{
                                       final url = val['link'];
-                                      final uri = Uri.parse(url);
+                                      final uri = Uri.parse(url.toString());
                                       if (await canLaunchUrl(uri)) {
-                                        await launchUrl(uri);
+                                        await launchUrl(
+                                          uri,
+                                          mode: LaunchMode.externalApplication,
+                                        );
                                       } else {
                                         throw 'Could not launch $url';
                                       }

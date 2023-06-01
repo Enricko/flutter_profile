@@ -165,12 +165,12 @@ class _UpdateRecordState extends State<UpdateRecord> {
         };
 
         db_Ref!.child(widget.Contact_Key).update(Contact).whenComplete(() {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => Home(),
-            ),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (_) => Home(),
+          //   ),
+          // );
         });
       }
     } on Exception catch (e) {
@@ -187,12 +187,12 @@ class _UpdateRecordState extends State<UpdateRecord> {
       };
 
       db_Ref!.child(widget.Contact_Key).update(Contact).whenComplete(() {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => Home(),
-          ),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => Home(),
+        //   ),
+        // );
       });
     }
   }

@@ -11,16 +11,16 @@ import "package:url_launcher/url_launcher.dart";
 
 import '../../../Controller/controller.dart';
 
-class MediaPage extends StatefulWidget {
-  const MediaPage({super.key});
+class ProjectPage extends StatefulWidget {
+  const ProjectPage({super.key});
 
   @override
-  State<MediaPage> createState() => _MediaPageState();
+  State<ProjectPage> createState() => _ProjectPageState();
 }
 
-class _MediaPageState extends State<MediaPage> {
-  DatabaseReference db_media =
-      FirebaseDatabase.instance.ref().child('medias');
+class _ProjectPageState extends State<ProjectPage> {
+  DatabaseReference ref =
+      FirebaseDatabase.instance.ref().child('Projects');
   var shim = true;
   var perPageSelected = 10;
 
@@ -36,7 +36,7 @@ class _MediaPageState extends State<MediaPage> {
       child: Column(
         children: [
           FirebaseDatabaseQueryBuilder(
-            query: db_media,
+            query: ref,
             builder: (context, snapshot, _) {
               if(snapshot.hasData){
                 var data = snapshot.docs;
@@ -56,7 +56,7 @@ class _MediaPageState extends State<MediaPage> {
                   ),
                   child: Container(
                     margin: EdgeInsets.only(right: 70,left: 15,top: 15,bottom: 15),
-                    child: TableMedia(data,db_media)
+                    child: TableData(data,ref)
                     )
                   );
               }else{
@@ -81,16 +81,18 @@ class _MediaPageState extends State<MediaPage> {
       ),
     );
   }
-  PaginatedDataTable TableMedia(dynamic list, db_media) {
+  PaginatedDataTable TableData(dynamic list, ref) {
     return PaginatedDataTable(
       arrowHeadColor: Colors.white,
-      header: Text("Table User Masyarakat"),
+      header: Text("Table Project"),
       onRowsPerPageChanged: (perPage) {
         setState(() {
           perPageSelected = perPage!;
           // perPageSelectedOnChange = perPage;
         });
       },
+      dataRowHeight: 70,
+      // dataRowMaxHeight: 250,
       columnSpacing: 50,
       rowsPerPage: perPageSelected,
       columns: <DataColumn>[
@@ -98,7 +100,13 @@ class _MediaPageState extends State<MediaPage> {
           label: Text('No'),
         ),
         DataColumn(
-          label: Text('Image'),
+          label: Text('Thumbnail'),
+        ),
+        DataColumn(
+          label: Text('Title'),
+        ),
+        DataColumn(
+          label: Text('Description'),
         ),
         DataColumn(
           label: Text('Link'),
@@ -107,7 +115,7 @@ class _MediaPageState extends State<MediaPage> {
           label: Text('Action'),
         ),
       ],
-      source: MyData(data: list,db:db_media,context: context),
+      source: MyData(data: list,db:ref,context: context),
     );
   }
 }
@@ -128,10 +136,12 @@ class MyData extends DataTableSource {
       DataCell(Text("${index + 1}")),
       DataCell(
         Image.network(
-          "${d['image']}",
+          "${d['thumbnail']}",
           width: 50,
         )
       ),
+      DataCell(Text(d['title'])),
+      DataCell(Text(d['description'])),
       DataCell(Text(d['link'])),
       DataCell(
         Row(
@@ -156,7 +166,7 @@ class MyData extends DataTableSource {
                   color: Colors.red[900],
                 ),
                 onPressed: () {
-                  delete(context,uid,db,d['image']);
+                  delete(context,uid,db,d['thumbnail']);
                 },
               ),
             ),
@@ -189,7 +199,7 @@ class MyData extends DataTableSource {
                 db_Ref.child(uid).remove();
                 final del = FirebaseStorage.instance.refFromURL(image);
                 del.delete().whenComplete((){
-                  Navigator.of(context).pushReplacementNamed("/admin/media");
+                  Navigator.of(context).pushReplacementNamed("/admin/project");
                   EasyLoading.showSuccess('Succesfully delete data',dismissOnTap: true);
                 });
               },
@@ -198,7 +208,7 @@ class MyData extends DataTableSource {
             TextButton(
               onPressed: () {
                 // Close the dialog
-                Navigator.of(context).pushReplacementNamed("/admin/media");
+                Navigator.of(context).pushReplacementNamed("/admin/project");
               },
               child: const Text('No')
             )

@@ -13,20 +13,20 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    super.initState();
-  }
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('state = $state');
-  }
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance.addObserver(this);
+  //   super.initState();
+  // }
+  // @override
+  // void dispose() {
+  //   WidgetsBinding.instance.removeObserver(this);
+  //   super.dispose();
+  // }
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   print('state = $state');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -41,24 +41,24 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         backgroundColor: Color.fromRGBO(7, 17, 26, 1),
       automaticallyImplyLeading: false,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              cardColor: Color.fromARGB(255, 54, 60, 66),
-              dividerColor: Color.fromARGB(137, 34, 34, 34),
-              textTheme: TextTheme(
-                titleLarge: TextStyle(color: Colors.white),
-                titleMedium: TextStyle(color: Colors.white),
-                titleSmall: TextStyle(color: Colors.white),
-                bodyLarge: TextStyle(color: Colors.white),
-                bodyMedium: TextStyle(color: Colors.white),
-                bodySmall: TextStyle(color: Colors.white),
-              ),
-            ),
-            child: Stack(
-              children: [
-                Column(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Container(
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  cardColor: Color.fromARGB(255, 54, 60, 66),
+                  dividerColor: Color.fromARGB(137, 34, 34, 34),
+                  textTheme: TextTheme(
+                    titleLarge: TextStyle(color: Colors.white),
+                    titleMedium: TextStyle(color: Colors.white),
+                    titleSmall: TextStyle(color: Colors.white),
+                    bodyLarge: TextStyle(color: Colors.white),
+                    bodyMedium: TextStyle(color: Colors.white),
+                    bodySmall: TextStyle(color: Colors.white),
+                  ),
+                ),
+                child: Column(
                   children: [
                     HeaderProfile(),
                     Divider(
@@ -68,67 +68,70 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     AboutProfile(),
                   ],
                 ),
-                Positioned(
-                  right: 10,
-                  top: 5,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 90,
-                        decoration: BoxDecoration(color: Colors.white),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 10,
+            top: 5,
+            child: Row(
+              children: [
+                Container(
+                  width: 90,
+                  padding: EdgeInsets.symmetric(horizontal: 3),
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: Text(
+                    'Total Visitor',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600
+                    ),
+                  ),
+                ),
+                FirebaseDatabaseQueryBuilder(
+                  query: FirebaseDatabase.instance.ref().child('general'), 
+                  builder: (BuildContext context, FirebaseQueryBuilderSnapshot snapshot, Widget? child) { 
+                    if(snapshot.hasData){
+                      var data = snapshot.docs;
+                      List<Widget> listWidget = [];
+                      final val = data[1].value;
+                      return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 3),
+                        constraints: BoxConstraints(
+                          minWidth: 10
+                        ),
+                        decoration: BoxDecoration(color: Colors.blueAccent),
                         child: Text(
-                          'Online Visitor',
+                          '${val}',
                           style: TextStyle(
                             fontSize: 12,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600
                           ),
                         ),
+                      );
+                    }
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      constraints: BoxConstraints(
+                        minWidth: 10
                       ),
-                      FirebaseDatabaseQueryBuilder(
-                        query: FirebaseDatabase.instance.ref().child('general'), 
-                        builder: (BuildContext context, FirebaseQueryBuilderSnapshot snapshot, Widget? child) { 
-                          if(snapshot.hasData){
-                            var data = snapshot.docs;
-                            List<Widget> listWidget = [];
-                            final val = data[0].value;
-                            return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 3),
-                              constraints: BoxConstraints(
-                                minWidth: 10
-                              ),
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: Text(
-                                '${val}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600
-                                ),
-                              ),
-                            );
-                          }
-                          return Container(
-                            padding: EdgeInsets.symmetric(horizontal: 3),
-                            constraints: BoxConstraints(
-                              minWidth: 10
-                            ),
-                            decoration: BoxDecoration(color: Colors.white),
-                            child: Text(
-                              '0',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600
-                              ),
-                            ),
-                          );
-                        },
+                      decoration: BoxDecoration(color: Colors.blueAccent),
+                      child: Text(
+                        '0',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600
+                        ),
                       ),
-                    ],
-                  )
+                    );
+                  },
                 ),
               ],
-            ),
+            )
           ),
-        ),
+        ],
       ),
     );
   }
