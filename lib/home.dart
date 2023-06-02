@@ -1,6 +1,7 @@
 import "package:firebase_database/firebase_database.dart";
 import "package:firebase_ui_database/firebase_ui_database.dart";
 import "package:flutter/material.dart";
+import "package:flutter_profile/layouts/Project.dart";
 
 import "layouts/header.dart";
 import "layouts/about.dart";
@@ -66,6 +67,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       height: 10,
                     ),
                     AboutProfile(),
+                    Divider(
+                      color: Colors.white30,
+                      height: 10,
+                    ),
+                    ProjectProfile()
                   ],
                 ),
               ),
@@ -81,7 +87,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   padding: EdgeInsets.symmetric(horizontal: 3),
                   decoration: BoxDecoration(color: Colors.white),
                   child: Text(
-                    'Total Visitor',
+                    'width:${MediaQuery.sizeOf(context).width}',
+                    // 'Total Visitor',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600

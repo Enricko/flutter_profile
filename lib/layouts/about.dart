@@ -96,7 +96,7 @@ class _AboutProfileState extends State<AboutProfile> {
                   ),
                   Text(
                     "     I have advance skills in Web Developing such as HTML and CSS,Bootstrap for styling, and also has experience "
-                    "PHP framework such as Laravel and CI3(CodeIgniter 3). I'm using SQL based databased like MySql. "
+                    "PHP framework such as Laravel. I'm using SQL based databased like MySql. "
                     "and I have not advance or basic in Multi-Platform APPS Developing with using Flutter framework and Firebase as Databases. "
                     "I'm able to work in team and managing code using GIT.",
                     style: TextStyle(
