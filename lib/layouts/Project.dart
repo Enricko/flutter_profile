@@ -175,6 +175,7 @@ class _ProjectProfileState extends State<ProjectProfile> with SingleTickerProvid
                       child: FirebaseDatabaseQueryBuilder(
                         query: FirebaseDatabase.instance.ref().child('Projects'),
                         builder: (BuildContext context, FirebaseQueryBuilderSnapshot snapshot, Widget? child) { 
+                          int cekData = 0;
                           if (snapshot.hasData) {
                             var data = snapshot.docs;
                             List<Widget> listWidget = [];
@@ -182,6 +183,7 @@ class _ProjectProfileState extends State<ProjectProfile> with SingleTickerProvid
                               final val = data[i].value as Map<Object?,Object?>;
                               val['key'] = data[i].key;
                               if(val['category'] == 'flutter'){
+                                cekData++;
                                 listWidget.add(
                                   Div(
                                     divison: Division(
@@ -325,17 +327,219 @@ class _ProjectProfileState extends State<ProjectProfile> with SingleTickerProvid
                                 );
                               }
                             }
-                            return Responsive(children: listWidget);
+                            if (snapshot.docs.length >= 1 && cekData >= 1) {
+                              return Responsive(children: listWidget);
+                            }
+                            if(snapshot.docs.length <= 0 || cekData <= 0){
+                              return Container(
+                                height: 550,
+                                child: Center(
+                                  child: Text(
+                                    'Project not made yet!',
+                                    style: TextStyle(
+                                      fontSize: 26,
+                                      color: Colors.white
+                                    ),
+                                  )
+                                ),
+                              );
+                            }
                           }
-                          return CircularProgressIndicator();
+                          return Container(
+                            height: 550,
+                            child: Center(
+                              child: CircularProgressIndicator()
+                            ),
+                          );
                         }
                       ),
                     ),
+
                     // Laravel
-                    Responsive(
-                      children: [
-                        Text('Laravel'),
-                      ],
+                    SingleChildScrollView(
+                      child: FirebaseDatabaseQueryBuilder(
+                        query: FirebaseDatabase.instance.ref().child('Projects'),
+                        builder: (BuildContext context, FirebaseQueryBuilderSnapshot snapshot, Widget? child) { 
+                          int cekData = 0;
+                          if (snapshot.hasData) {
+                            var data = snapshot.docs;
+                            List<Widget> listWidget = [];
+                            for (var i = 0;i < data.length;i++) {
+                              final val = data[i].value as Map<Object?,Object?>;
+                              val['key'] = data[i].key;
+                              if(val['category'] == 'laravel'){
+                                cekData++;
+                                listWidget.add(
+                                  Div(
+                                    divison: Division(
+                                      colXL: 3,
+                                      colL: 4,
+                                      colM: 6,
+                                      colS: 12,
+                                      colXS: 12
+                                    ),
+                                    child: Container(
+                                      margin: EdgeInsets.all(5),
+                                      child: Card(
+                                        elevation: 0,
+                                        color: Colors.white12,
+                                        child: Container(
+                                          margin: EdgeInsets.all(20),
+                                          width: 300,
+                                          height: 350,
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                width: 300,
+                                                height: 150,
+                                                child: Center(
+                                                  child: Image.network(
+                                                    "${val['thumbnail']}",
+                                                    width: 300,
+                                                    height: 150,
+                                                    
+                                                  ),
+                                                ),
+                                              ),
+                                              Divider(
+                                                color: Colors.white30,
+                                                height: 10,
+                                              ),
+                                              SizedBox(
+                                                width: 300,
+                                                height: 120,
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "${val['title']}",
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                        color: Colors.white70,
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.w800
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      "${val['description']}",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 4,
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w700
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 15,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      final url = val['link'];
+                                                      final uri = Uri.parse(url.toString());
+                                                      if (await canLaunchUrl(uri)) {
+                                                        await launchUrl(
+                                                          uri,
+                                                          mode: LaunchMode.externalApplication,
+                                                        );
+                                                      } else {
+                                                        throw 'Could not launch $url';
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.blue[600],
+                                                        borderRadius: BorderRadius.circular(5)
+                                                      ),
+                                                      padding: EdgeInsets.all(3),
+                                                      child: RichText(
+                                                        text: TextSpan(
+                                                          children: [
+                                                            WidgetSpan(child: Container(margin: EdgeInsets.only(right: 2), child: Icon(Icons.link))),
+                                                            WidgetSpan(
+                                                              alignment: PlaceholderAlignment.middle,
+                                                              child: Text("Go to link")
+                                                            )
+                                                          ]
+                                                        )
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      _modalDetail(context,val['key']);
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white24,
+                                                        borderRadius: BorderRadius.circular(5)
+                                                      ),
+                                                      padding: EdgeInsets.all(3),
+                                                      child: RichText(
+                                                        text: TextSpan(
+                                                          children: [
+                                                            WidgetSpan(child: Container(margin: EdgeInsets.only(right: 2), child: Icon(Icons.zoom_in))),
+                                                            WidgetSpan(
+                                                              alignment: PlaceholderAlignment.middle,
+                                                              child: Text("See Detail")
+                                                            )
+                                                          ]
+                                                        )
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                );
+                              }
+                            }
+                            if (snapshot.docs.length >= 1 && cekData >= 1) {
+                              print(1);
+                              return Responsive(children: listWidget);
+                            }
+                            if(snapshot.docs.length <= 0 || cekData <= 0){
+                              return Container(
+                                height: 550,
+                                child: Center(
+                                  child: Text(
+                                    'Project not made yet!',
+                                    style: TextStyle(
+                                      fontSize: 26,
+                                      color: Colors.white
+                                    ),
+                                  )
+                                ),
+                              );
+                            }
+                          }
+
+                          return Container(
+                            height: 550,
+                            child: Center(
+                              child: CircularProgressIndicator()
+                            ),
+                          );
+                        }
+                      ),
                     ),
                 ],
               ),

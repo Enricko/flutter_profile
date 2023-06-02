@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -60,6 +61,9 @@ class _MyAppState extends State<MyApp> {
         ),
         theme: ThemeData(
           fontFamily: GoogleFonts.poppins().fontFamily,
+        ),
+        scrollBehavior: MaterialScrollBehavior().copyWith(
+          dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
         ),
         builder: EasyLoading.init(),
         // home: Home(),

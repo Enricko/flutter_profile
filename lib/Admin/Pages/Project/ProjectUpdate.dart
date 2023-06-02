@@ -9,14 +9,15 @@ import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:image_picker/image_picker.dart";
 import "package:random_string/random_string.dart";
 
-class ProjectInsert extends StatefulWidget {
-  const ProjectInsert({super.key});
+class ProjectUpdate extends StatefulWidget {
+  const ProjectUpdate({super.key, this.uid = ""});
+  final String uid;
 
   @override
-  State<ProjectInsert> createState() => _ProjectInsertState();
+  State<ProjectUpdate> createState() => _ProjectUpdateState();
 }
 
-class _ProjectInsertState extends State<ProjectInsert> {
+class _ProjectUpdateState extends State<ProjectUpdate> {
   TextEditingController titleCon = TextEditingController();
   TextEditingController descriptionCon = TextEditingController();
   TextEditingController linkCon = TextEditingController();
@@ -26,6 +27,11 @@ class _ProjectInsertState extends State<ProjectInsert> {
   ImagePicker image = ImagePicker();
   Uint8List webImage = Uint8List(8);
   var url;
+  var oldUrl;
+  var title;
+  var category;
+  var description;
+  var link;
   DatabaseReference? dbRef;
 
   bool load = false;
@@ -33,6 +39,28 @@ class _ProjectInsertState extends State<ProjectInsert> {
   void initState() {
     super.initState();
     dbRef = FirebaseDatabase.instance.ref().child('Projects');
+    if(widget.uid == ""){
+      Navigator.pushReplacementNamed(context,'/admin/media');
+      EasyLoading.showError('Something went wrong please try again.',dismissOnTap: true);
+      return;
+    }
+    getMedia();
+  }
+
+  getMedia()async{
+    DataSnapshot snapshot = await dbRef!.child(widget.uid!).get();
+
+    Map data = snapshot.value as Map;
+
+    // print(data['image']);
+    setState(() {
+      oldUrl = data['thumbnail'];
+      url = data['thumbnail'];
+      titleCon.text = data['title'];
+      descriptionCon.text = data['description'];
+      categoryCon = SingleValueDropDownController(data: DropDownValueModel(value: "${data['category']}", name: "${data['category']}"));
+      linkCon.text = data['link'];
+    });
   }
   getImage() async {
     XFile? img = await image.pickImage(source: ImageSource.gallery);
@@ -40,6 +68,7 @@ class _ProjectInsertState extends State<ProjectInsert> {
     setState(() {
       webImage = f;
       file = File(img!.path);
+      url = null;
     });
 
     // print(file);
@@ -47,23 +76,29 @@ class _ProjectInsertState extends State<ProjectInsert> {
 
   insertData() async {
     try {
-      var metadata = SettableMetadata(
-        contentType: "image/jpeg",
-      );
-      var imagefile = FirebaseStorage.instance
-          .ref()
-          .child("Projects")
-          .child("${randomAlpha(10)}-${DateTime.now()}.png");
+      if(url == null){
+        var metadata = SettableMetadata(
+          contentType: "image/jpeg",
+        );
+        var imagefile = FirebaseStorage.instance
+            .ref()
+            .child("Projects")
+            .child("${randomAlpha(10)}-${DateTime.now()}.png");
+          
+        UploadTask task = imagefile.putData(webImage);
+        if (!kIsWeb) {
+          UploadTask task = imagefile.putFile(file!);
+        }
+        TaskSnapshot snapshot = await task;
+        url = await snapshot.ref.getDownloadURL();
+        setState(() {
+          url = url;
+        });
+
+        final del = FirebaseStorage.instance.refFromURL(oldUrl);
+        await del.delete();
         
-      UploadTask task = imagefile.putData(webImage);
-      if (!kIsWeb) {
-        UploadTask task = imagefile.putFile(file!);
       }
-      TaskSnapshot snapshot = await task;
-      url = await snapshot.ref.getDownloadURL();
-      setState(() {
-        url = url;
-      });
       if (url != null) {
         Map<String, String> Project = {
           'title': titleCon.text,
@@ -73,8 +108,8 @@ class _ProjectInsertState extends State<ProjectInsert> {
           'thumbnail': url,
         };
 
-        dbRef!.push().set(Project).whenComplete(() {
-          EasyLoading.showSuccess('Data has been insert',dismissOnTap: true);
+        dbRef!.child(widget.uid).update(Project).whenComplete(() {
+          EasyLoading.showSuccess('Data has been Update',dismissOnTap: true);
           Navigator.pushReplacementNamed(context,'/admin/project');
           load = false;
           return;
@@ -133,28 +168,29 @@ class _ProjectInsertState extends State<ProjectInsert> {
               child: Container(
                 height: 200,
                 width: 200,
-                child: file == null
-                    ? Tooltip(
-                      message: "Upload Image",
-                      child: IconButton(
-                          icon: Icon(
-                            Icons.add_a_photo,
-                            size: 90,
-                            color: Color.fromARGB(255, 179, 179, 179),
-                          ),
-                          onPressed: () {
-                            getImage();
-                          },
-                        ),
-                    )
-                    : MaterialButton(
-                        height: 100,
-                        child: kIsWeb ? Image.memory(webImage!,fit: BoxFit.fill,)
-                            : Image.file(file!,fit: BoxFit.fill,),
-                        onPressed: () {
-                          getImage();
-                        },
-                      )),
+                child:  url == null
+                  ? Tooltip(
+                    message: "Upload Image",
+                    child: MaterialButton(
+                      height: 100,
+                      child: kIsWeb ? Image.memory(webImage!,fit: BoxFit.fill,)
+                          : Image.file(file!,fit: BoxFit.fill,),
+                      onPressed: () {
+                        getImage();
+                      },
+                    ),
+                  )
+                  : Tooltip(
+                    message: "Upload Image",
+                    child: MaterialButton(
+                      height: 100,
+                      child: Image.network(url!,fit: BoxFit.fill,),
+                      onPressed: () {
+                        getImage();
+                      },
+                    ),
+                  ),
+              ),
             ),
             SizedBox(
               height: 10,
@@ -317,9 +353,7 @@ class _ProjectInsertState extends State<ProjectInsert> {
                 height: 40,
                 child: ElevatedButton(
                   onPressed: () {
-                    print(categoryCon.dropDownValue!.value);
-                    
-                    if (file != null && linkCon.text != "" && categoryCon.dropDownValue.toString() != "" && titleCon.text != "" && descriptionCon.text != "") {
+                    if ((file != null || url != null) && linkCon.text != "" && categoryCon.dropDownValue.toString() != "" && titleCon.text != "" && descriptionCon.text != "") {
                       insertData();
                       setState(() {
                         load = true;

@@ -7,6 +7,7 @@ import "package:flutter_profile/Admin/Pages/media/mediaInsert.dart";
 import "../Controller/auth.dart";
 import "../model/media.dart";
 import "Pages/Project/ProjectInsert.dart";
+import "Pages/Project/ProjectUpdate.dart";
 import 'Pages/media/media.dart';
 import "Pages/media/mediaUpdate.dart";
 
@@ -29,6 +30,7 @@ class _AdminState extends State<Admin> {
     // Project
     'project' : ProjectPage(),
     'projectInsert' : ProjectInsert(),
+    'projectUpdate' : ProjectUpdate(),
   };
   final formCreate = <String,dynamic>{
     'media' : '/admin/media/insert',

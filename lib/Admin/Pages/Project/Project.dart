@@ -10,6 +10,7 @@ import "package:shimmer/shimmer.dart";
 import "package:url_launcher/url_launcher.dart";
 
 import '../../../Controller/controller.dart';
+import "ProjectUpdate.dart";
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
@@ -103,6 +104,9 @@ class _ProjectPageState extends State<ProjectPage> {
           label: Text('Thumbnail'),
         ),
         DataColumn(
+          label: Text('Category'),
+        ),
+        DataColumn(
           label: Text('Title'),
         ),
         DataColumn(
@@ -140,6 +144,7 @@ class MyData extends DataTableSource {
           width: 50,
         )
       ),
+      DataCell(Text(d['category'])),
       DataCell(Text(d['title'])),
       DataCell(Text(d['description'])),
       DataCell(Text(d['link'])),
@@ -154,7 +159,7 @@ class MyData extends DataTableSource {
                   color: Colors.yellow[900],
                 ),
                 onPressed: () {
-                  Navigator.push(context,MaterialPageRoute(builder: (context) => MediaUpdate(uid: uid,)));
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => ProjectUpdate(uid: uid,)));
                 },
               ),
             ),
